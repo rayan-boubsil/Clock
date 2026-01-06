@@ -46,7 +46,7 @@ running = True
 ##    alarm_time = (h_alarm, m_alarm, s_alarm)
 
 ##======== Mode 1 : Affichage de l'heure ==========##
-while running == '1' :
+while running :
     hour = afficher_heure(hour)
     change_time()
     ##alarm(alarm_time)
