@@ -33,12 +33,12 @@ def afficher_heure(hour=None) :
     ## Affichage heure
     if able_print :
         print('\n\n#==========================================#')
-        print(f'\n                {print_time[0]}:{print_time[1]}:{print_time[2]} {am_pm}\n')
+        print(f'\n                \033[91m{print_time[0]}:{print_time[1]}:{print_time[2]} {am_pm}\033[0m')
         if alarm_time!=None and alarm_time==tuple_time :
             print(" C'EST L'HEURE !")
         else : 
-            print(time_format) #à remplacer plus tard par \n
-        print(' F:format | A:alarme | P:pause | C:réglages')
+            print("")
+        print(' \033[93mF\033[0m:format | \033[93mA\033[0m:alarme | \033[93mP\033[0m:pause | \033[93mC\033[0m:réglages')
         print('#==========================================#')
     return tuple_time
 
@@ -100,7 +100,7 @@ keyboard.on_release_key('f', change_format)
 
 running = True
 
-##======== Mode 1 : Affichage de l'heure ==========##
+##======== Lancement de l'horloge ==========##
 while running :
     hour = afficher_heure(hour)
     change_time()
