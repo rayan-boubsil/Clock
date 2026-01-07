@@ -27,18 +27,21 @@ def afficher_heure(hour=None) :
         am_pm = 'AM'
     elif time_format == 12 and int(time.split(':')[0]) > 12 :
         am_pm = 'PM'
-    print_time = (str(int(time.split(':')[0])%time_format), time.split(':')[1], time.split(':')[2])
+    print_time = (str(int(time.split(':')[0])%time_format).zfill(2), time.split(':')[1], time.split(':')[2])
     tuple_time = (time.split(':')[0], time.split(':')[1], time.split(':')[2])
 
     ## Affichage heure
     if able_print :
+        time_line = f'|                \033[91m{print_time[0]}:{print_time[1]}:{print_time[2]} {am_pm}\033[0m' + ' '*(17 - len(am_pm)) +'|'
         print('\n\n#==========================================#')
-        print(f'\n                \033[91m{print_time[0]}:{print_time[1]}:{print_time[2]} {am_pm}\033[0m')
+        print('|                                          |')
+        print (time_line)
+        #print(f'|                \033[91m{print_time[0]}:{print_time[1]}:{print_time[2]} {am_pm}\033[0m                  |')
         if alarm_time!=None and alarm_time==tuple_time :
-            print(" C'EST L'HEURE !")
+            print("|_____________\033[94mC'EST L'HEURE !\033[0m______________|")
         else : 
-            print("")
-        print(' \033[93mF\033[0m:format | \033[93mA\033[0m:alarme | \033[93mP\033[0m:pause | \033[93mC\033[0m:réglages')
+            print(f"|__________________________________________|")
+        print('|\033[93mF\033[0m:format | \033[93mA\033[0m:alarme | \033[93mP\033[0m:pause | \033[93mC\033[0m:réglages|')
         print('#==========================================#')
     return tuple_time
 
@@ -76,7 +79,7 @@ def alarm(_event=None) :
         m_alarm = input("Minute : ")
         s_alarm = input("Seconde : ")
         alarm_time = (h_alarm, m_alarm, s_alarm)
-        alarm_time = (str(int(alarm_time[0]) % time_format), alarm_time[1], alarm_time[2])
+        alarm_time = (str(int(alarm_time[0]) % time_format).zfill(2), alarm_time[1].zfill(2), alarm_time[2].zfill(2))
         able_print = True
 
 ##======= Changement de format de l'heure ========##
