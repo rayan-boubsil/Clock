@@ -10,26 +10,30 @@ time_zone=None
 paused=False
 modifier_alarme=False
 modif_heure=False
+skip_next_display=False
 
-# Afficher l'heure actuelle
+def tick_time(time_tuple):
+    h, m, s = time_tuple
+    s += 1
+    if s >= 60:
+        s = 0
+        m += 1
+        if m >= 60:
+            m = 0
+            h += 1
+            if h >= 24:
+                h = 0
+    return (h, m, s)
+
+# Afficher l'heure actuelle (sans incrémenter)
 def afficher_heure(time=None,time_zone=None):
     if time is None:
         # Obtenir l'heure et la date actuelle
         t = datetime.datetime.now() 
         actual_time = (t.hour, t.minute, t.second)
     else:
-        # Incrémenter l'heure fournie d'une seconde
-        h, m, s = time
-        s += 1
-        if s >= 60:
-            s = 0
-            m += 1
-            if m >= 60:
-                m = 0
-                h += 1
-                if h >= 24:
-                    h = 0
-        actual_time = (h, m, s)
+        # Afficher le temps fourni tel quel
+        actual_time = time
     
     # Afficher selon le format
     if time_zone == 24:
@@ -135,9 +139,14 @@ def regler_heur(_event=None,time=None,time_zone=None):
                 elif Ntime[9:]=="AM" and hour==12:
                     hour=0
                 Ntime = (hour, int(Ntime[3:5]), int(Ntime[6:8]))
+    if Ntime is not None:
+        afficher_heure(time=Ntime, time_zone=time_zone)
+        # Marquer pour ne pas réafficher dans la boucle suivante
+        global skip_next_display
+        skip_next_display = True
     return Ntime
 
-def changer_format(_event=None,time=None):
+def changer_format(_event=None):
     if _event is not None:    
         global time_zone
         if time_zone==24:
@@ -156,7 +165,7 @@ def main():
     keyboard.on_release_key('p', pause)
     keyboard.on_release_key('r', alarme)
     keyboard.on_release_key('e', regler_heur)
-    keyboard.on_release_key('f', changer_format(time=actual_time))
+    keyboard.on_release_key('f', changer_format)
     while runnig:
         if time_zone is None:
             tz=input("Choisissez le format d'heure (12/24) : ")
@@ -164,20 +173,29 @@ def main():
                 print("Format incorrect. Veuillez réessayer.")
                 continue
             time_zone=int(tz)
+        # Traiter d'abord la demande de réglage d'heure pour afficher la valeur saisie
         if modif_heure:
             modif_heure=False
             actual_time=regler_heur(time_zone=time_zone)
+        # Traiter une éventuelle demande d'alarme
         if  modifier_alarme:
             modifier_alarme = False
             alarme()
         # Afficher l'heure une seule fois par boucle
-        actual_time = afficher_heure(time=actual_time, time_zone=time_zone)
-        
+        global skip_next_display
+        if skip_next_display:
+            display_time = actual_time
+            skip_next_display = False
+        else:
+            display_time = afficher_heure(time=actual_time, time_zone=time_zone)
         if arlmeH is not None: 
-            alarme(time=actual_time)
+            alarme(time=display_time)
+        # Incrémenter seulement si on a réglé manuellement l'heure
+        if actual_time is not None:
+            actual_time = tick_time(display_time)
         time.sleep(1)
         pause()
-        changer_format(time=actual_time)  
+        changer_format()  
 if __name__ == "__main__":
     main()        
       
