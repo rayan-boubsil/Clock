@@ -2,8 +2,8 @@ import time
 import datetime
 import keyboard
 
-"""Module horloge.py"""
 
+# Variables globales
 runnig=True
 arlmeH=None
 time_zone=None
@@ -33,7 +33,7 @@ def afficher_heure(time=None,time_zone=None):
     
     # Afficher selon le format
     if time_zone == 24:
-        print(f'{actual_time[0]}:{actual_time[1]}:{actual_time[2]}')
+        print(f'{actual_time[0]:02d}:{actual_time[1]:02d}:{actual_time[2]:02d}')
     elif time_zone == 12:
         hour = actual_time[0]
         ampm = "AM" if hour < 12 else "PM"
@@ -41,7 +41,7 @@ def afficher_heure(time=None,time_zone=None):
             hour = 12
         elif hour > 12:
             hour -= 12
-        print(f'{hour}:{actual_time[1]}:{actual_time[2]} {ampm}')
+        print(f'{hour:02d}:{actual_time[1]:02d}:{actual_time[2]:02d} {ampm}')
     
     return actual_time
     
@@ -55,11 +55,11 @@ def pause(_event=None):
         time.sleep(0.1)
    
 # Gérer l'alarme
-def alarme(time=None, _event=None):
+def alarme(_event=None,time=None):
     global arlmeH, modifier_alarme, runnig
     
     # Si appelé par hotkey 'r', time sera un KeyboardEvent
-    if time is not None and hasattr(time, 'event_type'):
+    if _event is not None:
         modifier_alarme = True
         return   
     # Si time est None, c'est pour régler l'alarme
@@ -137,16 +137,26 @@ def regler_heur(_event=None,time=None,time_zone=None):
                 Ntime = (hour, int(Ntime[3:5]), int(Ntime[6:8]))
     return Ntime
 
+def changer_format(_event=None,time=None):
+    if _event is not None:    
+        global time_zone
+        if time_zone==24:
+            time_zone=12
+        else:
+            time_zone=24
+
+
+
 def main():
     global arlmeH
     global time_zone
     global modifier_alarme
     global modif_heure
     actual_time=None
-    new_time=None
     keyboard.on_release_key('p', pause)
     keyboard.on_release_key('r', alarme)
     keyboard.on_release_key('e', regler_heur)
+    keyboard.on_release_key('f', changer_format(time=actual_time))
     while runnig:
         if time_zone is None:
             tz=input("Choisissez le format d'heure (12/24) : ")
@@ -156,20 +166,18 @@ def main():
             time_zone=int(tz)
         if modif_heure:
             modif_heure=False
-            new_time=regler_heur(time_zone=time_zone)
-            actual_time=afficher_heure(time=new_time,time_zone=time_zone)    
+            actual_time=regler_heur(time_zone=time_zone)
         if  modifier_alarme:
             modifier_alarme = False
             alarme()
-        if actual_time is None:
-            actual_time = afficher_heure(time_zone=time_zone)
-        else:
-            actual_time = afficher_heure(time=actual_time,time_zone=time_zone)
+        # Afficher l'heure une seule fois par boucle
+        actual_time = afficher_heure(time=actual_time, time_zone=time_zone)
         
         if arlmeH is not None: 
-            alarme(actual_time)
+            alarme(time=actual_time)
         time.sleep(1)
-        pause()  
+        pause()
+        changer_format(time=actual_time)  
 if __name__ == "__main__":
     main()        
       
