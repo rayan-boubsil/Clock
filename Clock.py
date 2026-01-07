@@ -37,6 +37,7 @@ def afficher_heure(hour=None) :
         print('|                                          |')
         print (time_line)
         #print(f'|                \033[91m{print_time[0]}:{print_time[1]}:{print_time[2]} {am_pm}\033[0m                  |')
+        print(alarm_time, tuple_time)
         if alarm_time!=None and alarm_time==tuple_time :
             print("|_____________\033[94mC'EST L'HEURE !\033[0m______________|")
         else : 
@@ -51,7 +52,7 @@ def change_time(_event=None) :
     global hour
     if _event is not None :
         able_print = False
-        print("\n========== REGLAGE DE L'HEURE ===========")
+        print("\n========== REGLAGE DE L'HEURE ===========\n")
         new_h = input("Heure : ")
         new_m = input("Minute : ")
         new_s = input("Seconde : ")
@@ -79,7 +80,7 @@ def alarm(_event=None) :
         m_alarm = input("Minute : ")
         s_alarm = input("Seconde : ")
         alarm_time = (h_alarm, m_alarm, s_alarm)
-        alarm_time = (str(int(alarm_time[0]) % time_format).zfill(2), alarm_time[1].zfill(2), alarm_time[2].zfill(2))
+        alarm_time = (str(int(h_alarm) % time_format).zfill(2), m_alarm.zfill(2), s_alarm.zfill(2))
         able_print = True
 
 ##======= Changement de format de l'heure ========##
@@ -92,7 +93,7 @@ def change_format(_event=None) :
         else :
             time_format = 24
         if alarm_time is not None :
-            alarm_time = (str(int(alarm_time[0]) % time_format), alarm_time[1], alarm_time[2])
+            alarm_time = (str(int(alarm_time[0]) % time_format).zfill(2), alarm_time[1].zfill(2), alarm_time[2].zfill(2))
 
 
 ##======= def des évenement clavier ========##
