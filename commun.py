@@ -9,8 +9,7 @@ pouvoir_afficher=True
 heure_alarme=None
 heure_format=24
 
-##====afficher heure=====##
-def afficher_heure(heure=None):
+def raffraichir_heure(heure=None) : 
     ## heure actuelle si pas fournie ##
     global pouvoir_afficher, heure_format
     if heure is None:
@@ -20,8 +19,12 @@ def afficher_heure(heure=None):
     else: 
         heure_dt = datetime.now().replace(hour=heure[0], minute=heure[1], second=heure[2]) + timedelta(seconds=1)
         heure = (heure_dt.hour, heure_dt.minute, heure_dt.second)
+
+    return heure
+
+##====afficher heure=====##
+def afficher_heure(heure=None):
     heure_aff = heure
-        
     # Affichage selon le format choisi ##
     if heure_format==24:
         am_pm=""
@@ -33,13 +36,12 @@ def afficher_heure(heure=None):
         am_pm=" AM"
         if heure[0]==0:
             heure_aff = (12, heure[1], heure[2])
-    #print_heure = f"{heure[0]:02d}:{heure[1]:02d}:{heure[2]:02d}{am_pm}"
     ## Afficher l'heure ##
     if pouvoir_afficher:
         ligne_heure = f'|              \033[91m{heure_aff[0]:02d} : {heure_aff[1]:02d} : {heure_aff[2]:02d} {am_pm}\033[0m' + ' '*(15 - len(am_pm)) +'|'
         print(ligne_heure)
 
-    return heure
+    return 0
 
 
 #====== Réglage de l'heure ======##
@@ -77,25 +79,26 @@ def regler_alarme(_event=None,heure_format=None):
         pouvoir_afficher=False
         print("\n===== Réglage de l'alarme ====")
         while reglage_en_cours:
-            nouvelle_heure = input("Entrez l'heure de l'alarme :")
-            nouvelle_minute = input("Entrez les minutes de l'alarme : ")
-            nouvelle_seconde = input("Entrez les secondes de l'alarme : ")
+            print(heure_format)
+            alarme_h = int(input("Entrez l'heure de l'alarme : "))
+            alarme_m = int(input("Entrez les minutes de l'alarme : "))
+            alarme_s = int(input("Entrez les secondes de l'alarme : "))
             if heure_format==12:
                 am_pm = input("AM ou PM ? ").strip().upper()
-                if am_pm == "PM" and int(nouvelle_heure) < 12:
-                    nouvelle_heure = str(int(nouvelle_heure) + 12)
-                elif am_pm == "AM" and int(nouvelle_heure) == 12:
-                    nouvelle_heure = "0"
-            if (nouvelle_heure.isdigit() and 0 <= int(nouvelle_heure) < 24 and
-                nouvelle_minute.isdigit() and 0 <= int(nouvelle_minute) < 60 and
-                nouvelle_seconde.isdigit() and 0 <= int(nouvelle_seconde) < 60):
-                heure_alarme = (int(nouvelle_heure), int(nouvelle_minute), int(nouvelle_seconde))
+                if am_pm == "PM" and alarme_h < 12:
+                    alarme_h = alarme_h + 12
+                elif am_pm == "AM" and alarme_h == 12:
+                    alarme_h = "0"
+            if (str(alarme_h).isdigit() and 0 <= alarme_h < 24 and
+                str(alarme_m).isdigit() and 0 <= alarme_m < 60 and
+                str(alarme_s).isdigit() and 0 <= alarme_s < 60):
+                heure_alarme = (alarme_h, alarme_m, alarme_s)
                 reglage_en_cours = False
                 pouvoir_afficher=True
             else:
                 print("\n====Entrée invalide. Veuillez réessayer.=======")
 
-def verifier_alarme(heure=None, heure_format=None):
+def verifier_alarme(heure=None):
     global heure_alarme, pouvoir_afficher
     if heure_alarme is not None and heure is not None:
         if heure == heure_alarme and pouvoir_afficher:
@@ -124,7 +127,7 @@ def pause_heure(_event=None):
         pouvoir_afficher = not pouvoir_afficher
         
 ###===== def des evenements clavier ======###
-keyboard.on_press_key("f", changer_format)            
+keyboard.on_press_key("f", changer_format)
 keyboard.on_press_key("a", regler_alarme)
 keyboard.on_press_key("p", pause_heure)
 keyboard.on_press_key("c", regler_heure)
@@ -135,10 +138,11 @@ while marche:
     if pouvoir_afficher :
         print('\n\n#==========================================#')
         print('|                                          |')
-    heure=afficher_heure(heure)
+    heure=raffraichir_heure(heure)
+    afficher_heure(heure)
     regler_heure(heure_format=heure_format)
     regler_alarme(heure_format=heure_format)
-    verifier_alarme(heure=heure, heure_format=heure_format)
+    verifier_alarme(heure=heure)
     if pouvoir_afficher :
         print('|\033[93mF\033[0m:format | \033[93mA\033[0m:alarme | \033[93mP\033[0m:pause | \033[93mC\033[0m:réglages|')
         print('#==========================================#')
