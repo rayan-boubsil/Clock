@@ -30,8 +30,10 @@ def afficher_heure(hour=None) :
         am_pm = 'PM'
 
     print_time = (str(int(time.split(':')[0])%time_format).zfill(2), time.split(':')[1], time.split(':')[2])
-    if time.split(':')[0] == '12' and am_pm == 'PM' :
-        print_time = ('12', print_time[1], print_time[2]) 
+    # gere le cas de midi
+    if time.split(':')[0] == '12':
+        print_time = ('12', print_time[1], print_time[2])
+    # création du tuple de sortie
     tuple_time = (time.split(':')[0], time.split(':')[1], time.split(':')[2])
 
     ## Affichage heure
@@ -40,8 +42,6 @@ def afficher_heure(hour=None) :
         print('\n\n#==========================================#')
         print('|                                          |')
         print (time_line)
-        print(print_time, time)
-        #print(alarm_time, tuple_time)
         if is_alarm(tuple_time) :
             print("|_____________\033[94mC'EST L'HEURE !\033[0m______________|")
         else : 
