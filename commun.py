@@ -139,7 +139,7 @@ while marche:
     if pouvoir_afficher :
         print('\n\n#==========================================#')
         print('|                                          |')
-    heure=raffraichir_heure(heure)
+    heure=rafraichir_heure(heure)
     afficher_heure(heure)
     regler_heure(heure_format=heure_format)
     regler_alarme(heure_format=heure_format)
