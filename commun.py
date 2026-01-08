@@ -9,7 +9,8 @@ pouvoir_afficher=True
 heure_alarme=None
 heure_format=24
 
-def raffraichir_heure(heure=None) : 
+##======= rafraichissement de l'heure ========#
+def rafraichir_heure(heure=None) : 
     ## heure actuelle si pas fournie ##
     global pouvoir_afficher, heure_format
     if heure is None:
@@ -22,7 +23,7 @@ def raffraichir_heure(heure=None) :
 
     return heure
 
-##====afficher heure=====##
+##==== afficher heure =====##
 def afficher_heure(heure=None):
     heure_aff = heure
     # Affichage selon le format choisi ##
