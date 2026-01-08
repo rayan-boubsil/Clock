@@ -39,15 +39,8 @@ def afficher_heure(hour=None) :
     ## Affichage heure
     if able_print :
         time_line = f'|              \033[91m{print_time[0]} : {print_time[1]} : {print_time[2]} {am_pm}\033[0m' + ' '*(15 - len(am_pm)) +'|'
-        print('\n\n#==========================================#')
-        print('|                                          |')
         print (time_line)
-        if is_alarm(tuple_time) :
-            print("|_____________\033[94mC'EST L'HEURE !\033[0m______________|")
-        else : 
-            print(f"|__________________________________________|")
-        print('|\033[93mF\033[0m:format | \033[93mA\033[0m:alarme | \033[93mP\033[0m:pause | \033[93mC\033[0m:réglages|')
-        print('#==========================================#')
+
     return tuple_time
 
 ##======== Réglage de l'heure ========##
@@ -88,9 +81,11 @@ def alarm(_event=None,) :
         able_print = True
     # Vérification de l'alarme
 def is_alarm(hour) :
-    if hour ==  alarm_time :
+    if hour ==  alarm_time and able_print:
+        print("|_____________\033[94mC'EST L'HEURE !\033[0m______________|")
         return True
-    else :
+    elif able_print :
+        print(f"|__________________________________________|")
         return False
 
 ##======= Changement de format de l'heure ========##
@@ -102,9 +97,6 @@ def switch_format(_event=None) :
             time_format = 12
         else :
             time_format = 24
-        ##if alarm_time is not None :
-          ##  alarm_time = (str(int(alarm_time[0]) % time_format).zfill(2), alarm_time[1].zfill(2), alarm_time[2].zfill(2))
-
 
 ##======= def des évenement clavier ========##
 keyboard.on_release_key('c', change_time)
@@ -116,9 +108,15 @@ running = True
 
 ##======== Lancement de l'horloge ==========##
 while running :
+    if able_print :
+        print('\n\n#==========================================#')
+        print('|                                          |')
     hour = afficher_heure(hour)
     change_time()
     alarm()
     is_alarm(hour)
+    if able_print :
+        print('|\033[93mF\033[0m:format | \033[93mA\033[0m:alarme | \033[93mP\033[0m:pause | \033[93mC\033[0m:réglages|')
+        print('#==========================================#')
     time.sleep(1)
     pause()
