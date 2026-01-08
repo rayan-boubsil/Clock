@@ -20,6 +20,7 @@ def afficher_heure(heure=None):
     else: 
         heure_dt = datetime.now().replace(hour=heure[0], minute=heure[1], second=heure[2]) + timedelta(seconds=1)
         heure = (heure_dt.hour, heure_dt.minute, heure_dt.second)
+    heure_aff = heure
         
     # Affichage selon le format choisi ##
     if heure_format==24:
@@ -27,16 +28,15 @@ def afficher_heure(heure=None):
     elif heure_format==12 and heure[0]>=12:
         am_pm=" PM"
         if heure[0]>12:
-            heure = (heure[0]-12, heure[1], heure[2])
+            heure_aff = (heure[0]-12, heure[1], heure[2])
     elif heure_format==12 and heure[0]<12:
         am_pm=" AM"
         if heure[0]==0:
-            heure = (12, heure[1], heure[2])
+            heure_aff = (12, heure[1], heure[2])
     #print_heure = f"{heure[0]:02d}:{heure[1]:02d}:{heure[2]:02d}{am_pm}"
-    
     ## Afficher l'heure ##
     if pouvoir_afficher:
-        ligne_heure = f'|              \033[91m{heure[0]:02d} : {heure[1]:02d} : {heure[2]:02d} {am_pm}\033[0m' + ' '*(15 - len(am_pm)) +'|'
+        ligne_heure = f'|              \033[91m{heure_aff[0]:02d} : {heure_aff[1]:02d} : {heure_aff[2]:02d} {am_pm}\033[0m' + ' '*(15 - len(am_pm)) +'|'
         print(ligne_heure)
 
     return heure
@@ -50,9 +50,9 @@ def regler_heure(_event=None,heure_format=None):
         pouvoir_afficher=False
         print("\n===== Réglage de l'heure ====")
         while reglage_en_cours:
-            nouvelle_heure = input("Entrez l'heure")
-            nouvelle_minute = input("Entrez les minutes")
-            nouvelle_seconde = input("Entrez les secondes")
+            nouvelle_heure = input("Entrez l'heure : ")
+            nouvelle_minute = input("Entrez les minutes : ")
+            nouvelle_seconde = input("Entrez les secondes : ")
             if heure_format==12:
                 am_pm = input("AM ou PM ? ").strip().upper()
                 if am_pm == "PM" and int(nouvelle_heure) < 12:
@@ -77,9 +77,9 @@ def regler_alarme(_event=None,heure_format=None):
         pouvoir_afficher=False
         print("\n===== Réglage de l'alarme ====")
         while reglage_en_cours:
-            nouvelle_heure = input("Entrez l'heure de l'alarme")
-            nouvelle_minute = input("Entrez les minutes de l'alarme")
-            nouvelle_seconde = input("Entrez les secondes de l'alarme")
+            nouvelle_heure = input("Entrez l'heure de l'alarme :")
+            nouvelle_minute = input("Entrez les minutes de l'alarme : ")
+            nouvelle_seconde = input("Entrez les secondes de l'alarme : ")
             if heure_format==12:
                 am_pm = input("AM ou PM ? ").strip().upper()
                 if am_pm == "PM" and int(nouvelle_heure) < 12:
@@ -135,7 +135,7 @@ while marche:
     if pouvoir_afficher :
         print('\n\n#==========================================#')
         print('|                                          |')
-    heure=afficher_heure(heure=heure)
+    heure=afficher_heure(heure)
     regler_heure(heure_format=heure_format)
     regler_alarme(heure_format=heure_format)
     verifier_alarme(heure=heure, heure_format=heure_format)
