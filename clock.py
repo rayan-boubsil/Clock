@@ -50,9 +50,9 @@ def regler_heure(_event=None,heure_format=None):
         pouvoir_afficher=False
         print("\n===== Réglage de l'heure ====")
         while reglage_en_cours:
-            nouvelle_heure = input("Entrez l'heure")
-            nouvelle_minute = input("Entrez les minutes")
-            nouvelle_seconde = input("Entrez les secondes")
+            nouvelle_heure = input("Entrez l'heure ")
+            nouvelle_minute = input("Entrez les minutes ")
+            nouvelle_seconde = input("Entrez les secondes ")
             if heure_format==12:
                 am_pm = input("AM ou PM ? ").strip().upper()
                 if am_pm == "PM" and int(nouvelle_heure) < 12:
@@ -77,9 +77,9 @@ def regler_alarme(_event=None,heure_format=None):
         pouvoir_afficher=False
         print("\n===== Réglage de l'alarme ====")
         while reglage_en_cours:
-            nouvelle_heure = input("Entrez l'heure de l'alarme")
-            nouvelle_minute = input("Entrez les minutes de l'alarme")
-            nouvelle_seconde = input("Entrez les secondes de l'alarme")
+            nouvelle_heure = input("Entrez l'heure de l'alarme ")
+            nouvelle_minute = input("Entrez les minutes de l'alarme ")
+            nouvelle_seconde = input("Entrez les secondes de l'alarme ")
             if heure_format==12:
                 am_pm = input("AM ou PM ? ").strip().upper()
                 if am_pm == "PM" and int(nouvelle_heure) < 12:
