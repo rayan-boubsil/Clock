@@ -20,6 +20,7 @@ def afficher_heure(heure=None):
     else: 
         heure_dt = datetime.now().replace(hour=heure[0], minute=heure[1], second=heure[2]) + timedelta(seconds=1)
         heure = (heure_dt.hour, heure_dt.minute, heure_dt.second)
+    heure_aff = heure
         
     # Affichage selon le format choisi ##
     if heure_format==24:
@@ -27,21 +28,17 @@ def afficher_heure(heure=None):
     elif heure_format==12 and heure[0]>=12:
         am_pm=" PM"
         if heure[0]>12:
-            heure = (heure[0]-12, heure[1], heure[2])
+            heure_aff = (heure[0]-12, heure[1], heure[2])
     elif heure_format==12 and heure[0]<12:
         am_pm=" AM"
         if heure[0]==0:
-            heure = (12, heure[1], heure[2])
-    print_heure = f"{heure[0]:02d}:{heure[1]:02d}:{heure[2]:02d}{am_pm}"
-    
+            heure_aff = (12, heure[1], heure[2])
+    #print_heure = f"{heure[0]:02d}:{heure[1]:02d}:{heure[2]:02d}{am_pm}"
     ## Afficher l'heure ##
     if pouvoir_afficher:
-        ligne_heure = f"|         \33[91m{print_heure}\33[0m' + ' '*(15-len(am_pm))   +     '|']"
-        print('\n\n#==========================#')
-        print('|                           |')
+        ligne_heure = f'|              \033[91m{heure_aff[0]:02d} : {heure_aff[1]:02d} : {heure_aff[2]:02d} {am_pm}\033[0m' + ' '*(15 - len(am_pm)) +'|'
         print(ligne_heure)
-        print('|\033[93mF\033[0m:format | \033[93mA\033[0m:alarme | \033[93mP\033[0m:pause | \033[93mC\033[0m:réglages|')
-        print('#==========================#')  
+
     return heure
 
 
@@ -101,13 +98,13 @@ def regler_alarme(_event=None,heure_format=None):
 def verifier_alarme(heure=None, heure_format=None):
     global heure_alarme, pouvoir_afficher
     if heure_alarme is not None and heure is not None:
-        if heure == heure_alarme:
+        if heure == heure_alarme and pouvoir_afficher:
             pouvoir_afficher=True
-            print("\n\33[92m===== ALARME ! ALARME ! ALARME ! =====\33[0m")
-            for _ in range(5):
-                print("\a")  # Sonner l'alarme
-                time.sleep(1)
+            print("|  \33[92m===== ALARME ! ALARME ! ALARME ! =====\33[0m  |")
             heure_alarme = None  # Réinitialiser l'alarme après sonnerie
+    elif pouvoir_afficher :
+        print(f"|__________________________________________|")
+
 
 
 ##=====changer format heure====##
@@ -135,9 +132,15 @@ keyboard.on_press_key("c", regler_heure)
 ###===== Boucle principale ======##
 marche=True
 while marche:
-    hour=afficher_heure(heure=heure)
+    if pouvoir_afficher :
+        print('\n\n#==========================================#')
+        print('|                                          |')
+    heure=afficher_heure(heure)
     regler_heure(heure_format=heure_format)
     regler_alarme(heure_format=heure_format)
-    verifier_alarme(heure=hour, heure_format=heure_format)
+    verifier_alarme(heure=heure, heure_format=heure_format)
+    if pouvoir_afficher :
+        print('|\033[93mF\033[0m:format | \033[93mA\033[0m:alarme | \033[93mP\033[0m:pause | \033[93mC\033[0m:réglages|')
+        print('#==========================================#')
     time.sleep(1)
     pause_heure()
