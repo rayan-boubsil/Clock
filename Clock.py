@@ -37,7 +37,7 @@ def afficher_heure(hour=None) :
         print('|                                          |')
         print (time_line)
         print(alarm_time, tuple_time)
-        if alarm_time!=None and alarm_time==tuple_time :
+        if is_alarm(tuple_time) :
             print("|_____________\033[94mC'EST L'HEURE !\033[0m______________|")
         else : 
             print(f"|__________________________________________|")
@@ -69,7 +69,8 @@ def pause(_event=None):
         time.sleep(0.1)
 
 ##====== Alarme =======##
-def alarm(_event=None) : 
+    # Réglage de l'alarme
+def alarm(_event=None,) :
     if _event is not None :
         global alarm_time
         global able_print
@@ -80,6 +81,12 @@ def alarm(_event=None) :
         s_alarm = input("Seconde : ")
         alarm_time = (str(int(h_alarm) % time_format).zfill(2), m_alarm.zfill(2), s_alarm.zfill(2))
         able_print = True
+    # Vérification de l'alarme
+def is_alarm(hour) :
+    if hour ==  alarm_time :
+        return True
+    else :
+        return False
 
 ##======= Changement de format de l'heure ========##
 def switch_format(_event=None) :
@@ -107,5 +114,6 @@ while running :
     hour = afficher_heure(hour)
     change_time()
     alarm()
+    is_alarm(hour)
     time.sleep(1)
     pause()
