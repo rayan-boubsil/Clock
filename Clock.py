@@ -91,7 +91,6 @@ def is_alarm(hour) :
 ##======= Changement de format de l'heure ========##
 def switch_format(_event=None) :
     global time_format
-    global alarm_time
     if _event is not None :
         if time_format == 24 :
             time_format = 12
