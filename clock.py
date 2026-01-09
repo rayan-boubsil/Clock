@@ -119,7 +119,8 @@ def verifier_alarme(heure=None):
             pouvoir_afficher=True
             print("|  \33[92m===== ALARME ! ALARME ! ALARME ! =====\33[0m  |")
             heure_alarme = None  # Réinitialiser l'alarme après sonnerie
-    elif pouvoir_afficher :
+            return 0
+    if pouvoir_afficher :
         print(f"|__________________________________________|")
 
 
