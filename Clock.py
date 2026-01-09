@@ -1,46 +1,44 @@
 import time
 import threading
 
-# Variable globale pour stocker l'alarme
-alarme = None
-alarme_lock = threading.Lock()  # verrou pour éviter les conflits
+# Drapeau global pour contrôler l'affichage de l'horloge
+afficher = True
 
-# Fonction pour régler l'alarme (appelée quand l'alarme sonne)
-def set_alarm():
-    global alarme
-    while True:
-        try:
-            h = int(input("\nNouvelle alarme - Heure (0-23) : "))
-            m = int(input("Minutes (0-59) : "))
-            s = int(input("Secondes (0-59) : "))
+def regler_alarme():
+    """Permet de régler une alarme"""
+    global afficher
+    afficher = False  # On stoppe l'affichage pendant la saisie
 
-            if not (0 <= h < 24 and 0 <= m < 60 and 0 <= s < 60):
-                print("Heure invalide. Réessayez.")
-                continue
+    print("\n--- Réglage de l'alarme ---")
+    h = int(input("Heure de l'alarme (0-23) : "))
+    m = int(input("Minute de l'alarme (0-59) : "))
+    s = int(input("Seconde de l'alarme (0-59) : "))
+    print(f"Nouvelle alarme réglée à {h:02d}:{m:02d}:{s:02d}\n")
 
-            with alarme_lock:
-                alarme = (h, m, s)
-            print(f"Alarme réglée à {h:02}:{m:02}:{s:02}")
-            break
-        except ValueError:
-            print("Entrée incorrecte. Réessayez.")
+    afficher = True  # On reprend l'affichage après la saisie
+    return (h, m, s)
 
-# Fonction pour afficher l'heure et gérer l'alarme
-def show_time(heure):
-    global alarme
+def verifier_alarme(h, m, s, alarmes):
+    """Vérifie si l'heure actuelle correspond à une alarme"""
+    for i, alarme in enumerate(alarmes):
+        if alarme is not None and (h, m, s) == alarme:
+            print(f"\n🔔 Alarme ! Il est {h:02d}:{m:02d}:{s:02d} ! 🔔")
+            # Lancer un thread pour redemander une nouvelle alarme
+            def nouvelle_alarme(i=i):
+                alarmes[i] = regler_alarme()
+            threading.Thread(target=nouvelle_alarme, daemon=True).start()
+
+def afficher_heure(heure, alarmes):
     h, m, s = heure
 
     while True:
-        print(f"{h:02}:{m:02}:{s:02}", end="\r", flush=True)
-
-        with alarme_lock:
-            if alarme is not None and (h, m, s) == alarme:
-                print(f"\n L'alarme sonne ! Il est {h:02}:{m:02}:{s:02} !")
-                alarme = None
-                # Quand l'alarme sonne, demander une nouvelle alarme
-                set_alarm()
+        # Affichage seulement si le drapeau est True
+        if afficher:
+            print(f"{h:02d}:{m:02d}:{s:02d}", end="\r", flush=True)
 
         time.sleep(1)
+
+        # Ajouter 1 seconde
         s += 1
         if s == 60:
             s = 0
@@ -51,17 +49,9 @@ def show_time(heure):
         if h == 24:
             h = 0
 
-# --- Programme principal ---
-heure_depart = (20, 30, 0)
+        # Vérifier les alarmes
+        verifier_alarme(h, m, s, alarmes)
 
-# Première alarme avant de lancer l'horloge
-print("Réglez la première alarme :")
-set_alarm()
-
-# Lancement du thread pour l'horloge
-thread_horloge = threading.Thread(target=show_time, args=(heure_depart,))
-thread_horloge.daemon = True
-thread_horloge.start()
-
-# Garder le programme actif
-thread_horloge.join()
+# Liste d'alarmes (ici on gère juste une alarme)
+alarmes = [regler_alarme()]
+afficher_heure((20, 30, 0), alarmes)
