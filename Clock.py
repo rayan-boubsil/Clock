@@ -1,9 +1,11 @@
+# Importation des bibliothèques
 import time
 import threading
 
-
+# Variable globale pour stocker l'alarme
 alarme = None
 
+# Fonction pour régler l'alarme
 def set_alarm():
     global alarme
     while True:
@@ -16,6 +18,7 @@ def set_alarm():
         except ValueError:
             print("Entrée incorrecte, veuillez recommencer.")
 
+# Fonction pour afficher l'heure
 def show_time(heure):
     global alarme
     h, m, s = heure
@@ -41,9 +44,10 @@ def show_time(heure):
         if h == 24:
             h = 0
 
+# Lancement du programme
 heure_depart = ((20, 30, 0))
 
-
+# Thread qui permet d'éxécuter un petit programme en parallèle
 thread_horloge = threading.Thread(target=show_time, args=(heure_depart,))
 thread_horloge.daemon = True
 thread_horloge.start()
