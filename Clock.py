@@ -67,6 +67,7 @@ def pause(_event=None):
         time.sleep(0.1)
 
 ##====== Alarme =======##
+
     # Réglage de l'alarme
 def alarm(_event=None,) :
     if _event is not None :
@@ -79,6 +80,7 @@ def alarm(_event=None,) :
         s_alarm = input("Seconde : ")
         alarm_time = (str(int(h_alarm) % time_format).zfill(2), m_alarm.zfill(2), s_alarm.zfill(2))
         able_print = True
+
     # Vérification de l'alarme
 def is_alarm(hour) :
     if hour ==  alarm_time and able_print:
