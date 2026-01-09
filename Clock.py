@@ -1,32 +1,51 @@
 import time
+import threading
 
-def afficher_heure(heure):
-    # On récupère les valeurs du tuple
-    h = heure[0]
-    m = heure[1]
-    s = heure[2]
 
-    # Boucle infinie pour afficher l'heure
+alarme = None
+
+def set_alarm():
+    global alarme
+    while True:
+        try:
+            h = int(input("\nHeure de l'alarme : "))
+            m = int(input("Minutes : "))
+            s = int(input("Secondes : "))
+            alarme = (h, m, s)
+            print(f"Alarme réglée à {h:02}:{m:02d}:{s:02d}")
+        except ValueError:
+            print("Entrée incorrecte, veuillez recommencer.")
+
+def show_time(heure):
+    global alarme
+    h, m, s = heure
+
     while True:
         print(f"{h:02d}:{m:02d}:{s:02d}", end="\r", flush=True)
 
-        time.sleep(1)  # Attendre 1 seconde pour actualiser l'heure
+        if alarme is not None and (h, m, s) == alarme:
+            print("\n L'alarme sonne il est l'heure !")
+            alarme = None
 
-        # On ajoute 1 seconde
-        s = s + 1
+        time.sleep(1) 
 
+        s += 1
         if s == 60:
             s = 0
-            m = m + 1
+            m += 1
 
         if m == 60:
             m = 0
-            h = h + 1
+            h += 1
 
         if h == 24:
             h = 0
 
+heure_depart = ((20, 30, 0))
 
-# Affichage de l'heure avec des paramètres
-afficher_heure((20, 30, 0))
 
+thread_horloge = threading.Thread(target=show_time, args=(heure_depart,))
+thread_horloge.daemon = True
+thread_horloge.start()
+
+set_alarm()
