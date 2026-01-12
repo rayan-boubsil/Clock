@@ -4,8 +4,8 @@ import threading
 # Drapeau global pour contrôler l'affichage de l'horloge
 afficher = True
 
+# Fonction pour régler l'alarme au début
 def regler_alarme():
-    """Permet de régler une alarme"""
     global afficher
     afficher = False  # On stoppe l'affichage pendant la saisie
 
@@ -18,16 +18,17 @@ def regler_alarme():
     afficher = True  # On reprend l'affichage après la saisie
     return (h, m, s)
 
+# Fonction qui vérifie si l'heure correspond à une alarme
 def verifier_alarme(h, m, s, alarmes):
-    """Vérifie si l'heure actuelle correspond à une alarme"""
     for i, alarme in enumerate(alarmes):
         if alarme is not None and (h, m, s) == alarme:
-            print(f"\n🔔 Alarme ! Il est {h:02d}:{m:02d}:{s:02d} ! 🔔")
+            print(f"\n Alarme ! Il est {h:02d}:{m:02d}:{s:02d} !")
             # Lancer un thread pour redemander une nouvelle alarme
             def nouvelle_alarme(i=i):
                 alarmes[i] = regler_alarme()
             threading.Thread(target=nouvelle_alarme, daemon=True).start()
 
+# Fonction qui affiche l'heure
 def afficher_heure(heure, alarmes):
     h, m, s = heure
 
